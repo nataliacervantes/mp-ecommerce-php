@@ -57,7 +57,7 @@
 
           echo $preference->id;
         // Notificaciones Webhook
-        $preference->notification_url = $_SERVER['HTTP_HOST'] . "/ipn.php";
+        $preference->notification_url = $_SERVER['HTTP_HOST'] . "/webhook.php";
         // Save stuff
         $preference->save();
 
