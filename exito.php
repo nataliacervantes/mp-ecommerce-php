@@ -6,6 +6,7 @@
         require __DIR__ .  '/vendor/autoload.php';
 
         MercadoPago\SDK::setAccessToken('APP_USR-1159009372558727-072921-8d0b9980c7494985a5abd19fbe921a3d-617633181');
+        MercadoPago\SDK::setIntegratorId('​dev_24c65fb163bf11ea96500242ac130004');
 
         $preference = new MercadoPago\Preference();
 
@@ -17,7 +18,7 @@
         $item->quantity =  $_POST['unit'] ;
         $item->unit_price = $_POST['price'];
         $item->external_reference = "nataliaglezcervantes@gmail.com";
-
+        //crea datos del comprador
         $payer = new MercadoPago\Payer();
         $payer->name = "Lalo";
         $payer->surname = "Landa";
@@ -32,17 +33,16 @@
             "street_number" => 1602,
             "zip_code" => "0394​0"
         );
-
+        //asigna a la preferencia datos del productos y del comprador
         $preference->items = array($item);
         $preference->payer = $payer;
-
+        //crea las re direcciones según indique la respuesta de mercado pago 
         $preference->back_urls = array(
             "success" => $_SERVER['HTTP_HOST'] . "/exito.php",
             "failure" => $_SERVER['HTTP_HOST'] . "/error.php",
             "pending" => $_SERVER['HTTP_HOST'] . "/pendiente.php"
         );
-        $preference->auto_return = "approved";
-
+        //excluye los metodos de pagos de american xpress y depósitos bancarios   
         $preference->payment_methods = array(
             "excluded_payment_methods" => array(
               array("id" => "amex")
@@ -52,12 +52,11 @@
             ),
             "installments" => 6
           );
-        // Notificaciones Webhook
-        $preference->notification_url = $_SERVER['HTTP_HOST'] . "/ipn.php";
+          $preference->auto_return = "approved";
+          // Notificaciones Webhook
+          $preference->notification_url = $_SERVER['HTTP_HOST'] . "/ipn.php";
         // Save stuff
         $preference->save();
-
-
     ?>
 
     <meta name="viewport" content="width=1024">
@@ -115,7 +114,24 @@
                 </div>
             </div>
             <div class="as-search-results as-filter-open as-category-landing as-desktop" id="as-search-results">
-                todo chido y así 
+                <dl>
+                    <dt>Payment ID:</dt>
+                    <dd><?php echo $_GET['collection_id'] ?></dd>
+                    <dt>Estado:</dt>
+                    <dd><?php echo $_GET['collection_status'] ?></dd>
+                    <dt>Referencia:</dt>
+                    <dd><?php echo $_GET['external_reference'] ?></dd>
+                    <dt>Tipo de pago:</dt>
+                    <dd><?php echo $_GET['payment_type'] ?></dd>
+                    <dt>Preference ID:</dt>
+                    <dd><?php echo $_GET['preference_id'] ?></dd>
+                    <dt>Sitio ID:</dt>
+                    <dd><?php echo $_GET['site_id'] ?></dd>
+                    <dt>Modo de procesamiento:</dt>
+                    <dd><?php echo $_GET['processing_mode'] ?></dd>
+                    <dt>Merchant ID:</dt>
+                    <dd><?php echo $_GET['merchant_account_id'] ?></dd>
+                </dl>
             </div>
         </div>
         <div role="alert" class="as-loader-text ally" aria-live="assertive"></div>
